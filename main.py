@@ -1,22 +1,24 @@
 import pygame
+
 from playerclass import*
 from gameobjectclass import*
 
 pygame.init()
 screen = pygame.display.set_mode((900,900))
 
-camera_x = 0
-camera_y = 0
-
-gravity = -9.81
-y_max = 370
+game_running = True
 
 gameobjects = []
 
-mario = player(1, 25)
+mario = player(speed= 0.008, jump= 0.9)
 gameobjects.append(mario)
 
-game_running = True
+gameobjects.append(gameobject(pos=[4,0], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+
+camera_x = 0
+camera_y = 0
+
+gravity = 0.004
 
 while game_running:
 
@@ -31,10 +33,14 @@ while game_running:
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_a]:
-        mario.position[0] += mario.speed
+    mario.is_moving = False
+
     if keys[pygame.K_d]:
-        mario.position[0] -= mario.speed
+        mario.move(1)
+
+    if keys[pygame.K_a]:
+        mario.move(-1)
+    
     if keys[pygame.K_SPACE]:
         mario.jump()
 
@@ -47,11 +53,8 @@ while game_running:
 
     for obj in gameobjects:
 
-        if(obj.position[1] < y_max):
-            obj.velocity[1] += gravity
-        print(obj.velocity)
         obj.get_current_frame()
-        obj.update_position(y_max)
+        obj.update_position(gravity)
 
         screen.blit(obj.rendered_sprite, pygame.Rect(obj.position[0]+camera_x, obj.position[1]+camera_y, obj.width, obj.height))
 

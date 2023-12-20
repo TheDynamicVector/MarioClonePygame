@@ -2,20 +2,26 @@ import pygame
 
 class gameobject():
 
-    def __init__(self, pos, vel, w, h, s, image_path, animated_img=False, stat=True):
+    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True):
         
         self.position = pos
         self.velocity = vel 
 
-        self.static = stat
+        self.static = static
 
-        self.width = w
-        self.height = h
-        self.scale = s
+        self.width = width
+        self.height = height
+        self.scale = scale
 
         self.frame = 0
-        self.is_animated_img = animated_img
-    
+        self.is_animated = is_animated
+
+        self.direction = 1
+
+        self.transparent = transparent
+
+        self.grounded = False
+
         self.sprite = pygame.image.load(image_path + ".png").convert()
         self.get_current_frame()
 
@@ -24,11 +30,20 @@ class gameobject():
         self.rendered_sprite = pygame.Surface((self.width, self.height)).convert_alpha()
         self.rendered_sprite.blit(self.sprite, (0,0), ((self.frame*self.width), 0, self.width, self.height))
         self.rendered_sprite = pygame.transform.scale(self.rendered_sprite, (self.width*self.scale, self.height*self.scale))
-        self.rendered_sprite.set_colorkey((0,0,0))
+        
+        if self.direction == -1:
+            self.rendered_sprite = pygame.transform.flip(self.rendered_sprite, True, False)
 
-    def update_position(self, maxval):
+        if self.transparent:
+            self.rendered_sprite.set_colorkey((0,0,0))
+
+    def update_position(self, gravity):
+
+        if self.position[1] >= 270:
+            self.grounded = True
+
+        if self.static == False and self.grounded == False:
+            self.velocity[1] += gravity
 
         self.position[0] += self.velocity[0]
         self.position[1] += self.velocity[1]
-
-        self.position[1] = max(maxval, self.position[1])
