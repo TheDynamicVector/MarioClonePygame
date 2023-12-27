@@ -1,7 +1,6 @@
 from gameobjectclass import*
 
 friction_force = 2
-max_speed = 0.7
 
 def sign(val):
     if val < 0:
@@ -27,13 +26,13 @@ def clamp(val, min, max):
 
 class player(gameobject):
 
-    def __init__(self, speed, jump):
+    def __init__(self, speed, jump, accel):
 
         super().__init__(
             pos=[0,0], 
             vel=[0,0], 
             width=114, 
-            height=190, 
+            height=95, 
             scale=1, 
             image_path="Sprites/Mario", 
             is_animated=True, 
@@ -41,6 +40,7 @@ class player(gameobject):
         )
         
         self.speed = speed
+        self.accel = accel
         self.jump_velocity = jump
 
         self.powered_up = False
@@ -49,24 +49,25 @@ class player(gameobject):
 
     def jump(self):
         
-        if(self.grounded == True):
+        if self.grounded == True:
             self.velocity[1] = -self.jump_velocity
             self.grounded = False
 
     def move(self, direction):
         self.is_moving = True
         self.direction = direction
-        self.velocity[0] += self.speed*direction
+        self.velocity[0] += self.accel*direction
 
     def update_position(self, gravity):
 
         #Clamp velocity to max speed
-        self.velocity[0] = clamp(self.velocity[0], -max_speed, max_speed)
+        self.velocity[0] = clamp(self.velocity[0], -self.speed, self.speed)
 
         #Move Horizontal Velocity towards 0
         if self.is_moving == False and self.velocity[0] != 0:
-            self.velocity[0] = lerp(self.velocity[0], 0, (abs(self.velocity[0])/max_speed)/friction_force)
-
-        self.position[1] = clamp(self.position[1], 0, 270)
-
+            self.velocity[0] = lerp(self.velocity[0], 0, (abs(self.velocity[0])/self.speed)/friction_force)
+        
         super().update_position(gravity)
+
+    def check_collisions(self, objects):
+        super().check_collisions(objects)

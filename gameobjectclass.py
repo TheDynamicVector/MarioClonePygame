@@ -2,12 +2,13 @@ import pygame
 
 class gameobject():
 
-    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True):
+    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True):
         
         self.position = pos
         self.velocity = vel 
 
         self.static = static
+        self.collidable = collidable
 
         self.width = width
         self.height = height
@@ -20,7 +21,12 @@ class gameobject():
 
         self.transparent = transparent
 
+        self.rect = pygame.Rect(0,0,0,0)
+
         self.grounded = False
+
+        self.collisions = []
+
 
         self.sprite = pygame.image.load(image_path + ".png").convert()
         self.get_current_frame()
@@ -37,13 +43,28 @@ class gameobject():
         if self.transparent:
             self.rendered_sprite.set_colorkey((0,0,0))
 
+    def check_collisions(self, objects):
+
+        coll_list = []
+
+        for o in objects:
+
+            if o != self and o.collidable == True and pygame.Rect.colliderect(self.rect, o.rect):
+                
+                coll_list.append(o)
+
+                if abs(self.rect.bottom - o.rect.top) <= 56:
+                    self.grounded = True
+
+        self.collisions = coll_list
+    
     def update_position(self, gravity):
-
-        if self.position[1] >= 270:
-            self.grounded = True
-
+        
         if self.static == False and self.grounded == False:
             self.velocity[1] += gravity
+
+        elif self.velocity[1] >= 0:
+            self.velocity[1] = 0
 
         self.position[0] += self.velocity[0]
         self.position[1] += self.velocity[1]

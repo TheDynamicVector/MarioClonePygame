@@ -10,11 +10,11 @@ game_running = True
 
 gameobjects = []
 
-mario = player(speed= 0.008, jump= 0.9)
+mario = player(speed= 1.8, accel = 0.02, jump= 4)
 gameobjects.append(mario)
 
-gameobjects.append(gameobject(pos=[0,500], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
-gameobjects.append(gameobject(pos=[0,500], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+for i in range(-10,50):
+    gameobjects.append(gameobject(pos=[i*63,450], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
 
 camera_x = 0
 camera_y = 0
@@ -22,7 +22,7 @@ camera_y = 0
 camera_x_offset = 400
 camera_y_offset = 350
 
-gravity = 0.004
+gravity = 0.024
 
 while game_running:
 
@@ -36,6 +36,7 @@ while game_running:
             game_running = False
 
     keys = pygame.key.get_pressed()
+
 
     mario.is_moving = False
 
@@ -57,13 +58,17 @@ while game_running:
 
     for obj in gameobjects:
 
-        obj.get_current_frame()
-        obj.update_position(gravity)
-
         relative_x = obj.position[0]+camera_x
         relative_y = obj.position[1]-camera_y
+        obj.rect = pygame.Rect(relative_x, relative_y, obj.width, obj.height)
+        
+        # pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
 
-        screen.blit(obj.rendered_sprite, pygame.Rect(relative_x, relative_y, obj.width, obj.height))
+        obj.get_current_frame()
+        obj.check_collisions(gameobjects)
+        obj.update_position(gravity)
+
+        screen.blit(obj.rendered_sprite, obj.rect)
 
     pygame.display.flip()
 
