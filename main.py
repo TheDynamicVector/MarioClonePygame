@@ -13,10 +13,14 @@ gameobjects = []
 mario = player(speed= 0.008, jump= 0.9)
 gameobjects.append(mario)
 
-gameobjects.append(gameobject(pos=[4,0], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+gameobjects.append(gameobject(pos=[0,500], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+gameobjects.append(gameobject(pos=[0,500], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
 
 camera_x = 0
 camera_y = 0
+
+camera_x_offset = 400
+camera_y_offset = 350
 
 gravity = 0.004
 
@@ -45,8 +49,8 @@ while game_running:
         mario.jump()
 
     #Set camera
-    camera_x = mario.position[0]
-    camera_y = mario.position[1]
+    camera_x = camera_x_offset - mario.position[0]
+    camera_y = -camera_y_offset + mario.position[1]
 
     #Background
     screen.fill((0,138,197))
@@ -56,7 +60,10 @@ while game_running:
         obj.get_current_frame()
         obj.update_position(gravity)
 
-        screen.blit(obj.rendered_sprite, pygame.Rect(obj.position[0]+camera_x, obj.position[1]+camera_y, obj.width, obj.height))
+        relative_x = obj.position[0]+camera_x
+        relative_y = obj.position[1]-camera_y
+
+        screen.blit(obj.rendered_sprite, pygame.Rect(relative_x, relative_y, obj.width, obj.height))
 
     pygame.display.flip()
 
