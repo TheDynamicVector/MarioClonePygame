@@ -2,6 +2,7 @@ import pygame
 
 from playerclass import*
 from gameobjectclass import*
+from goomba import*
 from time import*
 
 pygame.init()
@@ -9,6 +10,8 @@ screen = pygame.display.set_mode((900,900))
 
 pygame.font.init()
 my_font = pygame.font.SysFont('Comic Sans MS', 300)
+
+death_level = 500
 
 def main():
 
@@ -26,7 +29,11 @@ def main():
     gameobjects.append(gameobject(pos=[0,450-63], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
     gameobjects.append(gameobject(pos=[0,450-(2*63)], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
     gameobjects.append(gameobject(pos=[0,450-(8*63)], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
-
+    gameobjects.append(gameobject(pos=[63*13,450-63], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+    
+    gameobjects.append(goomba(pos=[200,200]))
+    gameobjects.append(goomba(pos=[300,200]))
+    gameobjects.append(goomba(pos=[400,200]))
 
     camera_x = 0
     camera_y = 0
@@ -78,9 +85,9 @@ def main():
 
             relative_x = obj.position[0]+camera_x
             relative_y = obj.position[1]-camera_y
-            obj.rect = pygame.Rect(relative_x, relative_y, obj.width, obj.height)
+            obj.rect = pygame.Rect(relative_x, relative_y, obj.width*obj.scale, obj.height*obj.scale)
             
-            # pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
+            pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
 
             obj.get_current_frame()
             obj.check_collisions(gameobjects) 
@@ -89,6 +96,9 @@ def main():
                 obj.update_position(gravity)
 
             screen.blit(obj.rendered_sprite, obj.rect)
+
+            if obj.unqueue_self or (obj != mario and obj.position[1] >= death_level):
+                gameobjects.remove(obj)
         
         if mario.alive == False:
             game_paused = True
