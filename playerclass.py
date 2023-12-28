@@ -1,7 +1,7 @@
 from gameobjectclass import*
 
 friction_force = 2
-death_level = 2200
+death_level = 800
 
 def sign(val):
     if val < 0:
@@ -37,7 +37,13 @@ class player(gameobject):
             scale=1, 
             image_path="Sprites/Mario", 
             is_animated=True, 
-            static=False
+            static=False,
+            animation_dict= {
+                "Idle" : [0],
+                "Walk" : [1,2,3,2],
+                "Jump" : [5],
+                "Death" : [6]
+            }
         )
         
         self.speed = speed
@@ -57,6 +63,7 @@ class player(gameobject):
             self.grounded = False
 
     def move(self, direction):
+        self.change_anim("Walk")
         self.is_moving = True
         self.direction = direction
         self.velocity[0] += self.accel*direction
@@ -79,8 +86,20 @@ class player(gameobject):
 
         super().update_position(gravity)
 
-        if self.position[1] >= death_level:
+        if self.alive == True and self.position[1] >= death_level:
             self.alive = False
+            self.change_anim("Death")
 
-    def check_collisions(self, objects):
-        super().check_collisions(objects)
+    def get_current_frame(self):
+
+        if self.is_moving == False and self.grounded == True:
+            self.change_anim("Idle")
+
+        if self.grounded == False:
+            self.change_anim("Jump")
+
+        if self.alive == False:
+            self.change_anim("Death")
+
+        super().get_current_frame()
+        

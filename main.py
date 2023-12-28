@@ -2,20 +2,25 @@ import pygame
 
 from playerclass import*
 from gameobjectclass import*
+from time import*
 
 pygame.init()
 screen = pygame.display.set_mode((900,900))
 
+pygame.font.init()
+my_font = pygame.font.SysFont('Comic Sans MS', 300)
+
 def main():
 
     game_running = True
+    game_paused = False
 
     gameobjects = []
 
-    mario = player(speed= 1.8, accel = 0.02, jump= 4)
+    mario = player(speed= 1.8, accel = 0.02, jump = 4)
     gameobjects.append(mario)
 
-    for i in range(-10,50):
+    for i in range(-1,50):
         gameobjects.append(gameobject(pos=[i*63,450], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
 
     gameobjects.append(gameobject(pos=[0,450-63], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
@@ -33,9 +38,6 @@ def main():
 
     while game_running:
 
-        if mario.alive == False:
-            main()
-
         #Key Inputs
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -47,7 +49,6 @@ def main():
 
         keys = pygame.key.get_pressed()
 
-
         mario.is_moving = False
 
         if keys[pygame.K_d]:
@@ -58,6 +59,13 @@ def main():
         
         if keys[pygame.K_SPACE]:
             mario.jump()
+
+        if keys[pygame.K_r]:
+            main()
+
+        if game_paused:
+            restart_text = my_font.render('Press r to restart', False, (255, 255, 255))
+            screen.blit(restart_text, dest=(500,500))
 
         #Set camera
         camera_x = camera_x_offset - mario.position[0]
@@ -75,10 +83,15 @@ def main():
             # pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
 
             obj.get_current_frame()
-            obj.check_collisions(gameobjects)
-            obj.update_position(gravity)
+            obj.check_collisions(gameobjects) 
+
+            if game_paused == False:
+                obj.update_position(gravity)
 
             screen.blit(obj.rendered_sprite, obj.rect)
+        
+        if mario.alive == False:
+            game_paused = True
 
         pygame.display.flip()
 

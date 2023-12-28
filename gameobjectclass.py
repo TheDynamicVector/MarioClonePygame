@@ -1,10 +1,11 @@
 import pygame
+from time import*
 
 collision_margin = 15
-
+animation_speed = 0.1
 class gameobject():
 
-    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True):
+    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}):
         
         self.position = pos
         self.velocity = vel 
@@ -32,11 +33,25 @@ class gameobject():
 
         self.collisions = []
 
+        self.animation_dict = animation_dict
+
+        self.current_anim = "Idle"
+        self.frame_time = 0
+        self.anim_frame = 0
 
         self.sprite = pygame.image.load(image_path + ".png").convert()
-        self.get_current_frame()
+
+    def set_frame(self):
+        self.anim_frame = (self.anim_frame+1) % len(self.animation_dict[self.current_anim])
+        self.frame = self.animation_dict[self.current_anim][self.anim_frame]
+        self.frame_time = time()
 
     def get_current_frame(self):
+
+        if self.is_animated:
+            delta = time() - self.frame_time
+            if delta >= animation_speed:
+                self.set_frame()
 
         self.rendered_sprite = pygame.Surface((self.width, self.height)).convert_alpha()
         self.rendered_sprite.blit(self.sprite, (0,0), ((self.frame*self.width), 0, self.width, self.height))
@@ -89,3 +104,10 @@ class gameobject():
 
         self.position[0] += self.velocity[0]
         self.position[1] += self.velocity[1]
+
+    def change_anim(self, new_anim):
+
+        if new_anim != self.current_anim:
+            self.current_anim = new_anim
+            self.anim_frame = 0
+            self.set_frame()
