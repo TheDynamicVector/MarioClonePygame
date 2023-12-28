@@ -1,5 +1,7 @@
 import pygame
 
+collision_margin = 15
+
 class gameobject():
 
     def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True):
@@ -24,6 +26,9 @@ class gameobject():
         self.rect = pygame.Rect(0,0,0,0)
 
         self.grounded = False
+        self.obstructed_left = False
+        self.obstructed_right = False
+        self.obstructed_top = False
 
         self.collisions = []
 
@@ -46,6 +51,11 @@ class gameobject():
     def check_collisions(self, objects):
 
         coll_list = []
+        
+        self.grounded = False
+        self.obstructed_left = False
+        self.obstructed_right = False
+        self.obstructed_top = False
 
         for o in objects:
 
@@ -53,8 +63,19 @@ class gameobject():
                 
                 coll_list.append(o)
 
-                if abs(self.rect.bottom - o.rect.top) <= 56:
+                if abs(self.rect.bottom - o.rect.top) <= collision_margin:
                     self.grounded = True
+
+                else:
+
+                    if abs(self.rect.right - o.rect.left) <= collision_margin:
+                        self.obstructed_right = True
+
+                    if abs(self.rect.left - o.rect.right) <= collision_margin:
+                        self.obstructed_left = True
+
+                    if abs(self.rect.top - o.rect.bottom) <= collision_margin:
+                        self.obstructed_top = True
 
         self.collisions = coll_list
     

@@ -16,6 +16,11 @@ gameobjects.append(mario)
 for i in range(-10,50):
     gameobjects.append(gameobject(pos=[i*63,450], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
 
+gameobjects.append(gameobject(pos=[0,450-63], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+gameobjects.append(gameobject(pos=[0,450-(2*63)], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+gameobjects.append(gameobject(pos=[0,450-(8*63)], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+
+
 camera_x = 0
 camera_y = 0
 
