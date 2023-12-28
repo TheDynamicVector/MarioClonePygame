@@ -1,6 +1,7 @@
 from gameobjectclass import*
 
 friction_force = 2
+death_level = 2200
 
 def sign(val):
     if val < 0:
@@ -47,6 +48,8 @@ class player(gameobject):
 
         self.is_moving = False
 
+        self.alive = True
+
     def jump(self):
         
         if self.grounded == True:
@@ -75,6 +78,9 @@ class player(gameobject):
             self.velocity[1] = 0
 
         super().update_position(gravity)
+
+        if self.position[1] >= death_level:
+            self.alive = False
 
     def check_collisions(self, objects):
         super().check_collisions(objects)
