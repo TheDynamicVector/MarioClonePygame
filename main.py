@@ -87,7 +87,7 @@ def main():
             relative_y = obj.position[1]-camera_y
             obj.rect = pygame.Rect(relative_x, relative_y, obj.width*obj.scale, obj.height*obj.scale)
             
-            pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
+            # pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
 
             obj.get_current_frame()
             obj.check_collisions(gameobjects) 

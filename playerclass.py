@@ -32,19 +32,23 @@ class player(gameobject):
 
         self.alive = True
 
-    def jump(self):
-        
+    def jump(self, half_jump=False):
+
         if self.grounded == True:
+
             self.velocity[1] = -self.jump_velocity
+            if half_jump:
+                self.velocity[1] = -self.jump_velocity*0.75
+            
             self.grounded = False
 
     def update_position(self, gravity):
 
         super().update_position(gravity)
 
-        if self.bottom_collision != None and self.bottom_collision.is_enemy:
+        if self.bottom_collision != None and self.bottom_collision.is_enemy and self.bottom_collision.alive:
             self.bottom_collision.kill_self()
-            self.jump()
+            self.jump(half_jump=True)
 
         if self.alive == True:
             if self.position[1] >= death_level or (self.left_collision != None and self.left_collision.is_enemy) or (self.right_collision != None and self.right_collision.is_enemy) or (self.top_collision != None and self.top_collision.is_enemy):

@@ -45,6 +45,7 @@ class goomba(gameobject):
             self.alive = False
             self.time_of_death = time()
             self.change_anim("Death")
+            self.collidable = False
 
     def update_position(self, gravity):
         
