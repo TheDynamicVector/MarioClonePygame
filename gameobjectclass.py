@@ -4,7 +4,7 @@ from time import*
 collision_margin = 15
 animation_speed = 0.1
 
-friction_force = 2
+friction_force = 4
 
 def lerp(a, b, t):
 
@@ -25,7 +25,7 @@ def clamp(val, min, max):
 
 class gameobject():
 
-    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, is_enemy=False, is_player=False):
+    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, is_enemy=False, is_player=False, draw_order=0):
         
         self.position = pos
         self.velocity = vel 
@@ -79,6 +79,8 @@ class gameobject():
         self.is_player_on_top = False
 
         self.sprite = pygame.image.load(image_path + ".png").convert()
+
+        self.draw_order = draw_order
 
     def set_frame(self):
         self.anim_frame = (self.anim_frame+1) % len(self.animation_dict[self.current_anim])

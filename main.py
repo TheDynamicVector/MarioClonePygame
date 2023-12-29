@@ -1,15 +1,17 @@
 import pygame
+from time import*
 
 from playerclass import*
 from gameobjectclass import*
-from goomba import*
-from time import*
+from goombaclass import*
+from blockclass import*
+from propclass import*
 
 pygame.init()
 screen = pygame.display.set_mode((900,900))
 
 pygame.font.init()
-my_font = pygame.font.SysFont('Comic Sans MS', 300)
+game_font = pygame.font.SysFont(None, 55)
 
 death_level = 500
 
@@ -24,16 +26,18 @@ def main():
     gameobjects.append(mario)
 
     for i in range(-1,50):
-        gameobjects.append(gameobject(pos=[i*63,450], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+        gameobjects.append(block(pos=[i*63, 450], type="HardBlock"))
 
-    gameobjects.append(gameobject(pos=[0,450-63], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
-    gameobjects.append(gameobject(pos=[0,450-(2*63)], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
-    gameobjects.append(gameobject(pos=[0,450-(8*63)], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
-    gameobjects.append(gameobject(pos=[63*13,450-63], width=63, height=63, scale=1, image_path="Sprites/HardBlock", static=True, transparent=False))
+    gameobjects.append(block(pos=[0,450-63], type="HardBlock"))
+    gameobjects.append(block(pos=[0,450-(2*63)], type="HardBlock"))
+    gameobjects.append(block(pos=[0,450-(8*63)], type="HardBlock"))
+    gameobjects.append(block(pos=[63*13,450-63], type="HardBlock"))
     
     gameobjects.append(goomba(pos=[200,200]))
     gameobjects.append(goomba(pos=[300,200]))
     gameobjects.append(goomba(pos=[400,200]))
+
+    gameobjects.append(prop(pos=[200,310], type="Hill", scale=1.6))
 
     camera_x = 0
     camera_y = 0
@@ -70,10 +74,6 @@ def main():
         if keys[pygame.K_r]:
             main()
 
-        if game_paused:
-            restart_text = my_font.render('Press r to restart', False, (255, 255, 255))
-            screen.blit(restart_text, dest=(500,500))
-
         #Set camera
         camera_x = camera_x_offset - mario.position[0]
         camera_y = -camera_y_offset + mario.position[1]
@@ -81,7 +81,9 @@ def main():
         #Background
         screen.fill((0,138,197))
 
-        for obj in gameobjects:
+        sorted_objects = sorted(gameobjects, key=lambda order: order.draw_order)
+
+        for obj in sorted_objects:
 
             relative_x = obj.position[0]+camera_x
             relative_y = obj.position[1]-camera_y
@@ -102,6 +104,9 @@ def main():
         
         if mario.alive == False:
             game_paused = True
+            screen.blit(game_font.render('Press r to restart', True, (255, 255, 255), None), dest=(320,233))
+
+        screen.blit(game_font.render(str(mario.coins), True, (255, 255, 255), None), dest=(15,15))
 
         pygame.display.flip()
 

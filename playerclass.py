@@ -17,7 +17,7 @@ class player(gameobject):
             static=False,
             animation_dict= {
                 "Idle" : [0],
-                "Walk" : [1,2,3,2],
+                "Walk" : [1,2,3],
                 "Jump" : [5],
                 "Death" : [6]
             },
@@ -31,6 +31,8 @@ class player(gameobject):
         self.powered_up = False
 
         self.alive = True
+
+        self.coins = 15
 
     def jump(self, half_jump=False):
 
