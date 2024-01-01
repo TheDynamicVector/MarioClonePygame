@@ -4,7 +4,6 @@ from time import*
 from gameobjectclass import*
 from playerclass import*
 from enemyclass import*
-from blockclass import*
 from propclass import*
 
 pygame.init()
@@ -26,12 +25,14 @@ def main():
     gameobjects.append(mario)
 
     for i in range(-1,50):
-        gameobjects.append(block(pos=[i*63, 450], type="HardBlock"))
+        gameobjects.append(hard_block(pos=[i*63, 450]))
 
-    gameobjects.append(block(pos=[0,450-63], type="HardBlock"))
-    gameobjects.append(block(pos=[0,450-(2*63)], type="HardBlock"))
-    gameobjects.append(block(pos=[0,450-(8*63)], type="HardBlock"))
-    gameobjects.append(block(pos=[63*13,450-63], type="HardBlock"))
+    gameobjects.append(hard_block(pos=[0,450-63]))
+    gameobjects.append(hard_block(pos=[0,450-(2*63)]))
+    gameobjects.append(hard_block(pos=[0,450-(8*63)]))
+    gameobjects.append(hard_block(pos=[63*13,450-63]))
+
+    gameobjects.append(brick(pos=[340,130]))
 
     gameobjects.append(prop(pos=[200,310], type="Hill", scale=1.6))
 

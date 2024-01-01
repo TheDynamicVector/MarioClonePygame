@@ -67,6 +67,10 @@ class player(gameobject):
                     col.die()
                     self.jump(half_jump=True)
 
+            if col.object_type == "BreakableBlock":
+                if col.rect.bottom <= self.rect.bottom and self.velocity[1] < 0:
+                    col.change_anim("Shift")
+
             if col.object_type == "Coin":
                 col.unqueue_self = True
                 self.coins += 1

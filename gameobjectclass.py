@@ -30,10 +30,12 @@ def sign(val):
 
 class gameobject():
 
-    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, draw_order=0, register_collisions=True, object_type=""):
+    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, draw_order=0, register_collisions=True, object_type="", frame=0, one_shot=False):
         
         self.position = pos
         self.velocity = vel 
+
+        self.one_shot = one_shot
 
         self.object_type = object_type
 
@@ -44,7 +46,7 @@ class gameobject():
         self.height = height
         self.scale = scale
 
-        self.frame = 0
+        self.frame = frame
         self.is_animated = is_animated
 
         self.direction = 1
@@ -89,7 +91,14 @@ class gameobject():
         self.alive = True
 
     def set_frame(self):
-        self.anim_frame = (self.anim_frame+1) % len(self.animation_dict[self.current_anim])
+
+        self.anim_frame += 1
+
+        if self.one_shot and self.anim_frame >= len(self.animation_dict[self.current_anim]):
+            self.change_anim("Idle")
+            return
+        
+        self.anim_frame = self.anim_frame % len(self.animation_dict[self.current_anim])
         self.frame = self.animation_dict[self.current_anim][self.anim_frame]
         self.frame_time = time()
 
