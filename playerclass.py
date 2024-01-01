@@ -7,7 +7,7 @@ class player(gameobject):
     def __init__(self, speed, jump, accel):
 
         super().__init__(
-            pos=[0,0], 
+            pos=[200,100], 
             vel=[0,0], 
             width=114, 
             height=95, 
@@ -19,20 +19,25 @@ class player(gameobject):
                 "Idle" : [0],
                 "Walk" : [1,2,3],
                 "Jump" : [5],
-                "Death" : [6]
+                "Death" : [6],
+                "Powered_Idle": [7],
+                "Powered_Walk" : [8,9,10],
+                "Powered_Jump" : [12]
             },
             speed=speed,
             accel=accel,
-            is_player=True
+            object_type="Player"
         )
         
         self.jump_velocity = jump
 
-        self.powered_up = False
+        self.powered_up = True
 
         self.alive = True
 
-        self.coins = 15
+        self.coins = 0
+
+        self.power_up()
 
     def jump(self, half_jump=False):
 
@@ -40,7 +45,7 @@ class player(gameobject):
 
             self.velocity[1] = -self.jump_velocity
             if half_jump:
-                self.velocity[1] = -self.jump_velocity*0.75
+                self.velocity[1] *= 0.75
             
             self.grounded = False
 
@@ -48,17 +53,50 @@ class player(gameobject):
 
         super().update_position(gravity)
 
-        if self.bottom_collision != None and self.bottom_collision.is_enemy and self.bottom_collision.alive:
-            self.bottom_collision.kill_self()
-            self.jump(half_jump=True)
+        if self.alive == True and self.position[1] >= death_level:
+            self.die()
 
-        if self.alive == True:
-            if self.position[1] >= death_level or (self.left_collision != None and self.left_collision.is_enemy) or (self.right_collision != None and self.right_collision.is_enemy) or (self.top_collision != None and self.top_collision.is_enemy):
-                self.die()
+    def check_collisions(self, objects):
+
+        super().check_collisions(objects)
+
+        for col in self.collisions:
+
+            if col.object_type == "Enemy":
+                if col.rect.bottom <= self.rect.bottom:
+                    self.die()
+                elif col.alive == True:
+                    col.die()
+                    self.jump(half_jump=True)
+
+            if col.object_type == "Coin":
+                col.unqueue_self = True
+                self.coins += 1
+
+            if col.object_type == "Mushroom":
+                col.unqueue_self = True
+                self.power_up()
+
+    def power_up(self):
+        self.powered_up = True
+        self.height *= 2
+        self.position[1] -= self.height/2
+        self.get_current_frame()
+        self.set_frame()
+
+    def power_down(self):
+        self.powered_up = False
+        self.height /= 2
+        self.position[1] += self.height/2
+        self.get_current_frame()
+        self.set_frame()
 
     def die(self):
-        self.alive = False
-        self.change_anim("Death")
+        if self.powered_up:
+            self.power_down()
+        else:
+            self.alive = False
+            self.change_anim("Death")
 
     def get_current_frame(self):
 
@@ -70,6 +108,18 @@ class player(gameobject):
 
         if self.alive == False:
             self.change_anim("Death")
-
+        
         super().get_current_frame()
         
+    def set_frame(self):
+        bef_frame = self.anim_frame
+        super().set_frame()
+        print(bef_frame==self.anim_frame)
+
+    def change_anim(self, new_anim):
+        if new_anim != self.current_anim:
+            self.current_anim = new_anim    
+            if self.powered_up:
+                self.current_anim = "Powered_" + new_anim
+            self.anim_frame = 0
+            self.set_frame()

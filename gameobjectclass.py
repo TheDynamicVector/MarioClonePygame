@@ -4,11 +4,11 @@ from time import*
 collision_margin = 15
 animation_speed = 0.1
 
-friction_force = 4
+friction_force = 2
 
 def lerp(a, b, t):
 
-    if abs(a-b) < 0.001:
+    if abs(a-b) < 0.005:
         return b 
 
     return (1 - t) * a + t * b
@@ -25,10 +25,12 @@ def clamp(val, min, max):
 
 class gameobject():
 
-    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, is_enemy=False, is_player=False, draw_order=0):
+    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, draw_order=0, register_collisions=True, object_type=""):
         
         self.position = pos
         self.velocity = vel 
+
+        self.object_type = object_type
 
         self.static = static
         self.collidable = collidable
@@ -70,17 +72,16 @@ class gameobject():
         self.accel = accel
 
         self.is_moving = False
-
-        self.is_player = is_player
         
-        self.is_enemy = is_enemy
+        self.register_collisions = register_collisions
 
         self.unqueue_self = False
-        self.is_player_on_top = False
 
         self.sprite = pygame.image.load(image_path + ".png").convert()
 
         self.draw_order = draw_order
+
+        self.alive = True
 
     def set_frame(self):
         self.anim_frame = (self.anim_frame+1) % len(self.animation_dict[self.current_anim])
@@ -106,7 +107,7 @@ class gameobject():
 
     def check_collisions(self, objects):
 
-        coll_list = []
+        self.collisions = []
         
         self.grounded = False
         self.obstructed_left = False
@@ -120,33 +121,33 @@ class gameobject():
 
         for o in objects:
 
-            if o != self and o.collidable == True and pygame.Rect.colliderect(self.rect, o.rect):
+            if o != self and o.register_collisions == True and pygame.Rect.colliderect(self.rect, o.rect):
                 
-                coll_list.append(o)
+                self.collisions.append(o)
 
-                if abs(self.rect.bottom - o.rect.top) <= collision_margin:
-                    self.grounded = True
-                    self.bottom_collision = o
+                if o.collidable == True:
+                    if abs(self.rect.bottom - o.rect.top) <= collision_margin:
+                        self.grounded = True
+                        self.bottom_collision = o
 
-                else:
+                    else:
 
-                    if abs(self.rect.right - o.rect.left) <= collision_margin:
-                        self.obstructed_right = True
-                        self.right_collision = o
+                        if abs(self.rect.right - o.rect.left) <= collision_margin:
+                            self.obstructed_right = True
+                            self.right_collision = o
 
-                    if abs(self.rect.left - o.rect.right) <= collision_margin:
-                        self.obstructed_left = True
-                        self.left_collision = o
+                        if abs(self.rect.left - o.rect.right) <= collision_margin:
+                            self.obstructed_left = True
+                            self.left_collision = o
 
-                    if abs(self.rect.top - o.rect.bottom) <= collision_margin:
-                        self.obstructed_top = True
-                        self.right_collision = o
+                        if abs(self.rect.top - o.rect.bottom) <= collision_margin:
+                            self.obstructed_top = True
+                            self.right_collision = o
 
-        self.collisions = coll_list
-    
     
     def move(self, direction):
-        self.change_anim("Walk")
+        if self.is_animated:
+            self.change_anim("Walk")
         self.is_moving = True
         self.direction = direction
         self.velocity[0] += self.accel*direction
@@ -182,7 +183,6 @@ class gameobject():
         self.position[1] += self.velocity[1]
 
     def change_anim(self, new_anim):
-
         if new_anim != self.current_anim:
             self.current_anim = new_anim
             self.anim_frame = 0

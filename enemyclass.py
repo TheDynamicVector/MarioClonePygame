@@ -21,7 +21,7 @@ class goomba(gameobject):
             speed=0.2,
             accel=0.5,
             self_moving=True,
-            is_enemy=True,
+            object_type="Enemy"
         )
         
         self.alive = True
@@ -40,7 +40,7 @@ class goomba(gameobject):
 
         super().get_current_frame()
 
-    def kill_self(self):
+    def die(self):
         if self.alive == True:
             self.alive = False
             self.time_of_death = time()

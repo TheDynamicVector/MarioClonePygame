@@ -1,9 +1,9 @@
 import pygame
 from time import*
 
-from playerclass import*
 from gameobjectclass import*
-from goombaclass import*
+from playerclass import*
+from enemyclass import*
 from blockclass import*
 from propclass import*
 
@@ -32,12 +32,10 @@ def main():
     gameobjects.append(block(pos=[0,450-(2*63)], type="HardBlock"))
     gameobjects.append(block(pos=[0,450-(8*63)], type="HardBlock"))
     gameobjects.append(block(pos=[63*13,450-63], type="HardBlock"))
-    
-    gameobjects.append(goomba(pos=[200,200]))
-    gameobjects.append(goomba(pos=[300,200]))
-    gameobjects.append(goomba(pos=[400,200]))
 
     gameobjects.append(prop(pos=[200,310], type="Hill", scale=1.6))
+
+    gameobjects.append(coin(pos=[200,310]))
 
     camera_x = 0
     camera_y = 0
@@ -106,7 +104,7 @@ def main():
             game_paused = True
             screen.blit(game_font.render('Press r to restart', True, (255, 255, 255), None), dest=(320,233))
 
-        screen.blit(game_font.render(str(mario.coins), True, (255, 255, 255), None), dest=(15,15))
+        screen.blit(game_font.render("coins: " + str(mario.coins), True, (255, 255, 255), None), dest=(15,15))
 
         pygame.display.flip()
 
