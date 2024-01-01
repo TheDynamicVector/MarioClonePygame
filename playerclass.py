@@ -31,13 +31,11 @@ class player(gameobject):
         
         self.jump_velocity = jump
 
-        self.powered_up = True
+        self.powered_up = False
 
         self.alive = True
 
         self.coins = 0
-
-        self.power_up()
 
     def jump(self, half_jump=False):
 
@@ -81,6 +79,7 @@ class player(gameobject):
         self.powered_up = True
         self.height *= 2
         self.position[1] -= self.height/2
+        self.speed *= 1.2
         self.get_current_frame()
         self.set_frame()
 
@@ -88,6 +87,7 @@ class player(gameobject):
         self.powered_up = False
         self.height /= 2
         self.position[1] += self.height/2
+        self.speed /= 1.2
         self.get_current_frame()
         self.set_frame()
 
@@ -110,16 +110,13 @@ class player(gameobject):
             self.change_anim("Death")
         
         super().get_current_frame()
-        
-    def set_frame(self):
-        bef_frame = self.anim_frame
-        super().set_frame()
-        print(bef_frame==self.anim_frame)
 
     def change_anim(self, new_anim):
+
+        if self.powered_up:
+            new_anim = "Powered_" + new_anim
+
         if new_anim != self.current_anim:
-            self.current_anim = new_anim    
-            if self.powered_up:
-                self.current_anim = "Powered_" + new_anim
+            self.current_anim = new_anim
             self.anim_frame = 0
             self.set_frame()

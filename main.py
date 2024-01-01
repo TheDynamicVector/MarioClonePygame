@@ -35,6 +35,8 @@ def main():
 
     gameobjects.append(prop(pos=[200,310], type="Hill", scale=1.6))
 
+    gameobjects.append(mushroom(pos=[500,100]))
+
     gameobjects.append(coin(pos=[200,310]))
 
     camera_x = 0

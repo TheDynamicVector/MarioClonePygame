@@ -23,6 +23,11 @@ def clamp(val, min, max):
     
     return val
 
+def sign(val):
+    if val < 0:
+        return -1
+    return 1
+
 class gameobject():
 
     def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, draw_order=0, register_collisions=True, object_type=""):
@@ -159,10 +164,12 @@ class gameobject():
         if self.is_moving == False and self.velocity[0] != 0:
             self.velocity[0] = lerp(self.velocity[0], 0, (abs(self.velocity[0])/self.speed)/friction_force)
 
-        if self.is_moving and self.obstructed_left and self.direction == -1:
+        velocity_dir = sign(self.velocity[0])
+
+        if self.is_moving and self.obstructed_left and velocity_dir == -1:
             self.velocity[0] = 0
 
-        if self.is_moving and self.obstructed_right and self.direction == 1:
+        if self.is_moving and self.obstructed_right and velocity_dir == 1:
             self.velocity[0] = 0
 
         if self.obstructed_top and self.velocity[1] < 0:
