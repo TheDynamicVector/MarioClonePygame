@@ -30,13 +30,18 @@ def sign(val):
 
 class gameobject():
 
-    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, draw_order=0, register_collisions=True, object_type="", frame=0, one_shot=False):
+    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, draw_order=0, register_collisions=True, object_type="", frame=0, one_shot_animation=False, collision_offset=[0,0], collision_size=[1,1]):
         
         self.position = pos
         self.velocity = vel 
 
-        self.one_shot = one_shot
+        self.unqueue_after_anim = False
 
+        self.one_shot_animation = one_shot_animation
+
+        self.collision_offset = collision_offset
+        self.collision_size = collision_size
+        
         self.object_type = object_type
 
         self.static = static
@@ -90,12 +95,16 @@ class gameobject():
 
         self.alive = True
 
+        self.add_obj = False
+
     def set_frame(self):
 
         self.anim_frame += 1
 
-        if self.one_shot and self.anim_frame >= len(self.animation_dict[self.current_anim]):
+        if self.one_shot_animation and self.anim_frame >= len(self.animation_dict[self.current_anim]):
             self.change_anim("Idle")
+            if self.unqueue_after_anim:
+                self.unqueue_self = True
             return
         
         self.anim_frame = self.anim_frame % len(self.animation_dict[self.current_anim])
@@ -122,6 +131,9 @@ class gameobject():
     def check_collisions(self, objects):
 
         self.collisions = []
+        
+        if self.collidable == False:
+            return
         
         self.grounded = False
         self.obstructed_left = False

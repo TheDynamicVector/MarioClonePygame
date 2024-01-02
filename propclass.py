@@ -3,12 +3,14 @@ from gameobjectclass import*
 size_hash = {
     "Hill" : [395,94],
     "HardBlock" : [63,63],
-    "Block" : [200, 240]
+    "Block" : [200, 240],
+    "Trees" : [165,197],
+    "Castle" : [581,713]
 }
 
 class block(gameobject):
 
-    def __init__(self, pos, type, index=0, breakable=False, scale=1, animation_dict={}):
+    def __init__(self, pos, type, index=0, breakable=False, scale=1, animation_dict={}, collision_offset=[0,0], collision_size=[1,1]):
 
         super().__init__(
             pos=pos, 
@@ -16,6 +18,8 @@ class block(gameobject):
             width=size_hash[type][0], 
             height=size_hash[type][1], 
             scale=scale, 
+            collision_offset=collision_offset,
+            collision_size=collision_size,
             animation_dict=animation_dict,
             image_path="Sprites/" + type,
             frame=index,
@@ -23,7 +27,7 @@ class block(gameobject):
             static=True,
             draw_order=-1,
             object_type= "BreakableBlock" if breakable else "",
-            one_shot=True,
+            one_shot_animation=True,
             transparent=breakable
         )
 
@@ -48,8 +52,56 @@ class brick(block):
             scale=0.32,
             index=0,
             breakable=True,
-            animation_dict={ "Idle" : [0], "Shift" : [1,1,0] },
+            collision_offset=[0,-12],
+            collision_size=[1,0.8],
+            animation_dict={ "Idle" : [0], "Shift" : [0,1,1,0], "Break" : [1,2] },
         )
+
+    def break_block(self, block_broke=False):
+        if block_broke:
+            self.change_anim("Break")
+            self.collidable = False
+            self.register_collisions = False
+            self.unqueue_after_anim = True
+
+        else:
+            self.change_anim("Shift")
+
+
+class question_block(block):
+
+    def __init__(self, pos, object_inside="Coin"):
+
+        super().__init__(
+            pos=pos, 
+            type="Block",
+            scale=0.32,
+            index=5,
+            breakable=True,
+            collision_offset=[0,-12],
+            collision_size=[1,0.8],
+            animation_dict={ "Idle" : [5], "Shift" : [3,4,4,3], "Break" : [5,6,7,3] },
+        )
+
+        self.empty = False
+
+        if object_inside == "Coin":
+            self.object_inside = coin(pos=[self.position[0]+11, self.position[1] - 50])
+
+        elif object_inside == "Mushroom":
+            self.object_inside = mushroom(pos=[self.position[0]+11, self.position[1] - 50])
+
+    def break_block(self, powered_up=False):
+        
+        if self.empty:
+            self.change_anim("Shift")
+
+        else:
+            self.change_anim("Break")
+            self.animation_dict["Idle"] = [3]
+            self.empty=True
+            self.add_obj = True
+
 
 class prop(gameobject):
 
@@ -102,7 +154,7 @@ class mushroom(gameobject):
             is_animated=False, 
             static=False,
             transparent=True,
-            collidable=False,
+            collidable=True,
             register_collisions=True,
             self_moving=True,
             object_type="Mushroom"

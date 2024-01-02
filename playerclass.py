@@ -67,9 +67,9 @@ class player(gameobject):
                     col.die()
                     self.jump(half_jump=True)
 
-            if col.object_type == "BreakableBlock":
-                if col.rect.bottom <= self.rect.bottom and self.velocity[1] < 0:
-                    col.change_anim("Shift")
+            if col.object_type == "BreakableBlock" and col.rect.bottom <= self.rect.bottom and self.velocity[1] < 0:
+                col.break_block(self.powered_up)
+                
 
             if col.object_type == "Coin":
                 col.unqueue_self = True
@@ -80,20 +80,24 @@ class player(gameobject):
                 self.power_up()
 
     def power_up(self):
-        self.powered_up = True
-        self.height *= 2
-        self.position[1] -= self.height/2
-        self.speed *= 1.2
-        self.get_current_frame()
-        self.set_frame()
+        if self.powered_up == False:
+            self.powered_up = True
+            self.height *= 2
+            self.position[1] -= self.height/2
+            self.speed *= 1.2
+            self.get_current_frame()
+            self.set_frame()
+        else:
+            self.coins += 5
 
     def power_down(self):
-        self.powered_up = False
-        self.height /= 2
-        self.position[1] += self.height/2
-        self.speed /= 1.2
-        self.get_current_frame()
-        self.set_frame()
+        if self.powered_up == True:
+            self.powered_up = False
+            self.height /= 2
+            self.position[1] += self.height/2
+            self.speed /= 1.2
+            self.get_current_frame()
+            self.set_frame()
 
     def die(self):
         if self.powered_up:

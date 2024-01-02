@@ -12,7 +12,7 @@ screen = pygame.display.set_mode((900,900))
 pygame.font.init()
 game_font = pygame.font.SysFont(None, 55)
 
-death_level = 500
+death_level = 900
 
 def main():
 
@@ -32,11 +32,11 @@ def main():
     gameobjects.append(hard_block(pos=[0,450-(8*63)]))
     gameobjects.append(hard_block(pos=[63*13,450-63]))
 
-    gameobjects.append(brick(pos=[340,130]))
+    gameobjects.append(question_block(pos=[340,130], object_inside="Mushroom"))
 
-    gameobjects.append(prop(pos=[200,310], type="Hill", scale=1.6))
+    gameobjects.append(prop(pos=[1200,-200], type="Castle", scale=1))
 
-    gameobjects.append(mushroom(pos=[500,100]))
+    gameobjects.append(koopa(pos=[500,100]))
 
     gameobjects.append(coin(pos=[200,310]))
 
@@ -88,20 +88,36 @@ def main():
 
             relative_x = obj.position[0]+camera_x
             relative_y = obj.position[1]-camera_y
-            obj.rect = pygame.Rect(relative_x, relative_y, obj.width*obj.scale, obj.height*obj.scale)
-            
-            # pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
 
-            obj.get_current_frame()
-            obj.check_collisions(gameobjects) 
+            if relative_x < screen.get_width() and relative_x > -50:
+     
+                obj.rect = pygame.Rect(relative_x, relative_y, obj.width*obj.scale, obj.height*obj.scale)
+                
+                obj.get_current_frame()
 
-            if game_paused == False:
-                obj.update_position(gravity)
+                if obj.collidable:
+                    obj.check_collisions(gameobjects) 
 
-            screen.blit(obj.rendered_sprite, obj.rect)
+                if game_paused == False:
+                    obj.update_position(gravity)
 
-            if obj.unqueue_self or (obj != mario and obj.position[1] >= death_level):
-                gameobjects.remove(obj)
+                screen.blit(obj.rendered_sprite, obj.rect)
+
+                if obj.collidable == True:
+                    obj.rect = pygame.Rect(relative_x-obj.collision_offset[0], relative_y-obj.collision_offset[1], obj.width*obj.scale*obj.collision_size[0], obj.height*obj.scale*obj.collision_size[1])
+                
+                #pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
+
+                if obj.unqueue_self or (obj != mario and obj.position[1] >= death_level):
+                    gameobjects.remove(obj)
+
+                if obj.add_obj == True:
+                    gameobjects.append(obj.object_inside)
+                    if obj.object_inside.object_type=="Coin":
+                        mario.coins+=1
+                        obj.object_inside.unqueue_self = True
+
+                    obj.add_obj = False
         
         if mario.alive == False:
             game_paused = True
