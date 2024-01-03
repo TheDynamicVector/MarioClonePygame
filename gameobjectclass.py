@@ -30,7 +30,7 @@ def sign(val):
 
 class gameobject():
 
-    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=0.2, accel=0.02, draw_order=0, register_collisions=True, object_type="", frame=0, one_shot_animation=False, collision_offset=[0,0], collision_size=[1,1]):
+    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=244, accel=23, draw_order=0, register_collisions=True, object_type="", frame=0, one_shot_animation=False, collision_offset=[0,0], collision_size=[1,1]):
         
         self.position = pos
         self.velocity = vel 
@@ -172,6 +172,8 @@ class gameobject():
 
     
     def move(self, direction):
+        
+
         if self.is_animated:
             self.change_anim("Walk")
         self.is_moving = True
@@ -197,7 +199,7 @@ class gameobject():
             self.velocity[1] = 0
         
         if self.static == False and self.grounded == False:
-            self.velocity[1] += gravity
+            self.velocity[1] += gravity*delta
 
         elif self.velocity[1] >= 0:
             self.velocity[1] = 0

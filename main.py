@@ -13,7 +13,7 @@ pygame.font.init()
 game_font = pygame.font.SysFont(None, 55)
 
 death_level = 900
-gravity = 0.009
+gravity = 1433
 
 def main():
 
@@ -22,7 +22,7 @@ def main():
 
     gameobjects = []
 
-    mario = player(speed= 0.6, accel = 0.02, jump = 2)
+    mario = player(speed = 777, accel = 23, jump = 850)
     gameobjects.append(mario)
 
     for i in range(-1,50):
@@ -50,6 +50,10 @@ def main():
     last_time = 0
 
     while game_running:
+
+        curr_time = pygame.time.get_ticks()
+        delta = (curr_time-last_time)/1000
+        last_time = curr_time
 
         #Key Inputs
         for event in pygame.event.get():
@@ -85,23 +89,16 @@ def main():
 
         sorted_objects = sorted(gameobjects, key=lambda order: order.draw_order)
 
-        curr_time = pygame.time.get_ticks()
-        delta = curr_time-last_time
-        last_time = curr_time
-
         for obj in sorted_objects:
 
             relative_x = obj.position[0]+camera_x
             relative_y = obj.position[1]-camera_y
 
-            if relative_x < screen.get_width()+100 and relative_x > -100:
+            if relative_x < screen.get_width()+600 and relative_x > -600:
      
                 obj.rect = pygame.Rect(relative_x, relative_y, obj.width*obj.scale, obj.height*obj.scale)
                 
                 obj.get_current_frame()
-
-                if obj.collidable:
-                    obj.check_collisions(gameobjects) 
 
                 if game_paused == False:
                     obj.update_position(gravity, delta)
@@ -110,7 +107,8 @@ def main():
 
                 if obj.collidable == True:
                     obj.rect = pygame.Rect(relative_x-obj.collision_offset[0], relative_y-obj.collision_offset[1], obj.width*obj.scale*obj.collision_size[0], obj.height*obj.scale*obj.collision_size[1])
-                
+                    obj.check_collisions(gameobjects) 
+                    
                 pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
 
                 if obj.unqueue_self or (obj != mario and obj.position[1] >= death_level):

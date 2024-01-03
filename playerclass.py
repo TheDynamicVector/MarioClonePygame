@@ -7,7 +7,7 @@ class player(gameobject):
     def __init__(self, speed, jump, accel):
 
         super().__init__(
-            pos=[200,100], 
+            pos=[0,0], 
             vel=[0,0], 
             width=114, 
             height=95, 
@@ -26,7 +26,8 @@ class player(gameobject):
             },
             speed=speed,
             accel=accel,
-            object_type="Player"
+            object_type="Player",
+            collision_size=[0.8, 1]
         )
         
         self.jump_velocity = jump
@@ -64,13 +65,12 @@ class player(gameobject):
                 if col.rect.bottom <= self.rect.bottom:
                     self.die()
                 elif col.alive == True:
-                    col.die()
+                    col.die(self)
                     self.jump(half_jump=True)
 
             if col.object_type == "BreakableBlock" and col.rect.bottom <= self.rect.bottom and self.velocity[1] < 0:
                 col.break_block(self.powered_up)
                 
-
             if col.object_type == "Coin":
                 col.unqueue_self = True
                 self.coins += 1
