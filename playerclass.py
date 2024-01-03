@@ -47,9 +47,9 @@ class player(gameobject):
             
             self.grounded = False
 
-    def update_position(self, gravity):
+    def update_position(self, gravity, delta):
 
-        super().update_position(gravity)
+        super().update_position(gravity, delta)
 
         if self.alive == True and self.position[1] >= death_level:
             self.die()

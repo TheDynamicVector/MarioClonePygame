@@ -73,7 +73,7 @@ class koopa(gameobject):
                 "Death" : [0]
             },
             speed=0.2,
-            accel=0.5,
+            accel=0.01,
             self_moving=True,
             object_type="Enemy",
         )

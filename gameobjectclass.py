@@ -30,7 +30,7 @@ def sign(val):
 
 class gameobject():
 
-    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=1, accel=0.1, draw_order=0, register_collisions=True, object_type="", frame=0, one_shot_animation=False, collision_offset=[0,0], collision_size=[1,1]):
+    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=0.2, accel=0.02, draw_order=0, register_collisions=True, object_type="", frame=0, one_shot_animation=False, collision_offset=[0,0], collision_size=[1,1]):
         
         self.position = pos
         self.velocity = vel 
@@ -178,8 +178,8 @@ class gameobject():
         self.direction = direction
         self.velocity[0] += self.accel*direction
 
-    def update_position(self, gravity):
-
+    def update_position(self, gravity, delta):
+        
         self.velocity[0] = clamp(self.velocity[0], -self.speed, self.speed)
 
         if self.is_moving == False and self.velocity[0] != 0:
@@ -207,8 +207,8 @@ class gameobject():
             if (self.obstructed_left and self.direction == -1) or (self.obstructed_right and self.direction == 1):
                 self.direction *= -1
 
-        self.position[0] += self.velocity[0]
-        self.position[1] += self.velocity[1]
+        self.position[0] += self.velocity[0]*delta
+        self.position[1] += self.velocity[1]*delta
 
     def change_anim(self, new_anim):
         if new_anim != self.current_anim:
