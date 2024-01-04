@@ -15,6 +15,8 @@ game_font = pygame.font.SysFont(None, 55)
 death_level = 900
 gravity = 1433
 
+gameobjects = []
+
 def main():
 
     game_running = True
@@ -56,11 +58,7 @@ def main():
 
         #Key Inputs
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    game_running = False
-
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 game_running = False
 
         keys = pygame.key.get_pressed()

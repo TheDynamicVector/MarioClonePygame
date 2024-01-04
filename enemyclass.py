@@ -107,7 +107,7 @@ class koopa(gameobject):
                     self.register_collisions = False
 
                 else:
-                    self.speed = 400
+                    self.speed = 755
                     self.time_of_death = time()
                     self.self_moving = True
 
