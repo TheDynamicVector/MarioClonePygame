@@ -50,9 +50,8 @@ def main():
     last_time = 0
 
     while game_running:
-
         curr_time = pygame.time.get_ticks()
-        delta = (curr_time-last_time)/1000
+        delta = min((curr_time-last_time)/1000, 0.1)
         last_time = curr_time
 
         #Key Inputs
