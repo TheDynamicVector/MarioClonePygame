@@ -29,14 +29,29 @@ def main():
 
 
     #Level Creation
-    for i in range(-1,100):
-        gameobjects.append(ground_block(pos=[i*63, 450 + h*63]))
+    for i in range(-5,70):
+        gameobjects.append(ground_block(pos=[i*63, 450]))
+
+    for i in range(80,110):
+        gameobjects.append(ground_block(pos=[i*63, 450]))
 
     gameobjects.append(question_block(pos=[1071,135], object_inside="Coin"))
     gameobjects.append(question_block(pos=[1512,-54], object_inside="Coin"))
 
     gameobjects.append(question_block(pos=[1449,135], object_inside="Mushroom"))
     gameobjects.append(question_block(pos=[1575,135], object_inside="Coin"))
+
+    for i in range(0,5):
+        gameobjects.append(coin(pos=[1400 + 63*i,310]))
+
+    for i in range(0,5):
+        gameobjects.append(coin(pos=[2050 + 63*i, 180]))
+
+    for i in range(0,10):
+        gameobjects.append(coin(pos=[3250 + 63*i, 310]))
+
+    for i in range(0,5):
+        gameobjects.append(coin(pos=[4650 + 63*i, 180]))
 
     gameobjects.append(brick(pos=[1512,135]))
     gameobjects.append(brick(pos=[1386,135]))
@@ -45,19 +60,30 @@ def main():
     gameobjects.append(goomba(pos=[1386,100]))
 
     gameobjects.append(pipe(pos=[1890,120], pipe_index=0))
-    gameobjects.append(goomba(pos=[2100,100]))
+    gameobjects.append(goomba(pos=[2100,200]))
 
     gameobjects.append(pipe(pos=[2394,120], pipe_index=1))
-    gameobjects.append(goomba(pos=[2500,100]))
-    gameobjects.append(goomba(pos=[2550,100]))
+    gameobjects.append(goomba(pos=[2680,200]))
+    gameobjects.append(goomba(pos=[2800,200]))
 
     gameobjects.append(pipe(pos=[2898,120], pipe_index=2))
+
+    gameobjects.append(question_block(pos=[5985,135], object_inside="Mushroom"))
+    gameobjects.append(brick(pos=[5923,135]))
+    gameobjects.append(brick(pos=[6048,135]))
+
+    gameobjects.append(pipe(pos=[1890,120], pipe_index=0))
+    
+    gameobjects.append(pipe(pos=[5040,120], pipe_index=0))
+    gameobjects.append(pipe(pos=[6803,120], pipe_index=0))
+
+    gameobjects.append(koopa(pos=[6500,200]))
 
     camera_x = 0
     camera_y = 0
 
     camera_x_offset = 400
-    camera_y_offset = 500
+    camera_y_offset = 350
 
     last_time = 0
 
@@ -116,7 +142,7 @@ def main():
                     obj.rect = pygame.Rect(relative_x-obj.collision_offset[0], relative_y-obj.collision_offset[1], obj.width*obj.scale*obj.collision_size[0], obj.height*obj.scale*obj.collision_size[1])
                     obj.check_collisions(gameobjects) 
                     
-                pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
+                #pygame.draw.rect(screen, (255, 0, 0), obj.rect, 5)
 
                 if obj.unqueue_self or (obj != mario and obj.position[1] >= death_level):
                     gameobjects.remove(obj)
