@@ -17,6 +17,8 @@ gravity = 1433
 
 gameobjects = []
 
+grid_size = 63
+
 def main():
 
     game_running = True
@@ -30,10 +32,10 @@ def main():
 
     #Level Creation
     for i in range(-5,70):
-        gameobjects.append(ground_block(pos=[i*63, 450]))
+        gameobjects.append(ground_block(pos=[i*grid_size, 450]))
 
     for i in range(80,110):
-        gameobjects.append(ground_block(pos=[i*63, 450]))
+        gameobjects.append(ground_block(pos=[i*grid_size, 450]))
 
     gameobjects.append(question_block(pos=[1071,135], object_inside="Coin"))
     gameobjects.append(question_block(pos=[1512,-54], object_inside="Coin"))
@@ -42,16 +44,16 @@ def main():
     gameobjects.append(question_block(pos=[1575,135], object_inside="Coin"))
 
     for i in range(0,5):
-        gameobjects.append(coin(pos=[1400 + 63*i,310]))
+        gameobjects.append(coin(pos=[1400 + grid_size*i,310]))
 
     for i in range(0,5):
-        gameobjects.append(coin(pos=[2050 + 63*i, 180]))
+        gameobjects.append(coin(pos=[2050 + grid_size*i, 180]))
 
     for i in range(0,10):
-        gameobjects.append(coin(pos=[3250 + 63*i, 310]))
+        gameobjects.append(coin(pos=[3250 + grid_size*i, 310]))
 
     for i in range(0,5):
-        gameobjects.append(coin(pos=[4650 + 63*i, 180]))
+        gameobjects.append(coin(pos=[4650 + grid_size*i, 180]))
 
     gameobjects.append(brick(pos=[1512,135]))
     gameobjects.append(brick(pos=[1386,135]))
