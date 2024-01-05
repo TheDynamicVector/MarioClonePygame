@@ -24,30 +24,40 @@ def main():
 
     gameobjects = []
 
-    mario = player(speed = 777, accel = 23, jump = 850)
+    mario = player(speed = 777, accel = 23, jump = 988)
     gameobjects.append(mario)
 
-    for i in range(-1,50):
-        gameobjects.append(hard_block(pos=[i*63, 450]))
 
-    gameobjects.append(hard_block(pos=[0,450-63]))
-    gameobjects.append(hard_block(pos=[0,450-(2*63)]))
-    gameobjects.append(hard_block(pos=[0,450-(8*63)]))
-    gameobjects.append(hard_block(pos=[63*13,450-63]))
+    #Level Creation
+    for i in range(-1,100):
+        gameobjects.append(ground_block(pos=[i*63, 450 + h*63]))
 
-    gameobjects.append(question_block(pos=[340,130], object_inside="Mushroom"))
+    gameobjects.append(question_block(pos=[1071,135], object_inside="Coin"))
+    gameobjects.append(question_block(pos=[1512,-54], object_inside="Coin"))
 
-    gameobjects.append(prop(pos=[1200,-200], type="Castle", scale=1))
+    gameobjects.append(question_block(pos=[1449,135], object_inside="Mushroom"))
+    gameobjects.append(question_block(pos=[1575,135], object_inside="Coin"))
 
-    gameobjects.append(koopa(pos=[500,100]))
+    gameobjects.append(brick(pos=[1512,135]))
+    gameobjects.append(brick(pos=[1386,135]))
+    gameobjects.append(brick(pos=[1638,135]))
 
-    gameobjects.append(coin(pos=[200,310]))
+    gameobjects.append(goomba(pos=[1386,100]))
+
+    gameobjects.append(pipe(pos=[1890,120], pipe_index=0))
+    gameobjects.append(goomba(pos=[2100,100]))
+
+    gameobjects.append(pipe(pos=[2394,120], pipe_index=1))
+    gameobjects.append(goomba(pos=[2500,100]))
+    gameobjects.append(goomba(pos=[2550,100]))
+
+    gameobjects.append(pipe(pos=[2898,120], pipe_index=2))
 
     camera_x = 0
     camera_y = 0
 
     camera_x_offset = 400
-    camera_y_offset = 350
+    camera_y_offset = 500
 
     last_time = 0
 

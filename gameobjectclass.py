@@ -30,7 +30,7 @@ def sign(val):
 
 class gameobject():
 
-    def __init__(self, pos, width, height, image_path, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=244, accel=23, draw_order=0, register_collisions=True, object_type="", frame=0, one_shot_animation=False, collision_offset=[0,0], collision_size=[1,1]):
+    def __init__(self, pos, width, height, image_path, direction=1, is_animated=False, static=True, vel=[0,0], scale=1, transparent=True, collidable=True, animation_dict={}, self_moving=False, speed=244, accel=23, draw_order=0, register_collisions=True, object_type="", frame=0, one_shot_animation=False, collision_offset=[0,0], collision_size=[1,1]):
         
         self.position = pos
         self.velocity = vel 
@@ -54,7 +54,7 @@ class gameobject():
         self.frame = frame
         self.is_animated = is_animated
 
-        self.direction = 1
+        self.direction = direction
 
         self.transparent = transparent
 

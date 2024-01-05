@@ -3,6 +3,7 @@ from gameobjectclass import*
 size_hash = {
     "Hill" : [395,94],
     "HardBlock" : [63,63],
+    "GroundBlock" : [63,63],
     "Block" : [200, 240],
     "Trees" : [165,197],
     "Castle" : [581,713]
@@ -40,6 +41,40 @@ class hard_block(block):
         super().__init__(
             pos=pos, 
             type="HardBlock",
+        )
+
+class ground_block(block):
+
+    def __init__(self, pos):
+
+        super().__init__(
+            pos=pos, 
+            type="GroundBlock",
+        )
+
+class pipe(gameobject):
+
+
+    def __init__(self, pos, pipe_index):
+
+        coll_offsets = [[0,-170],[0,-85],[0,0]]
+        coll_sizes = [[1,0.5],[1,0.75],[1,1]]
+
+        super().__init__(
+            pos=pos, 
+            vel=[0,0], 
+            width=142, 
+            height=333, 
+            scale=1, 
+            collision_offset=coll_offsets[pipe_index],
+            collision_size=coll_sizes[pipe_index],
+            is_animated=False,
+            image_path="Sprites/Pipes",
+            frame=pipe_index,
+            static=True,
+            draw_order=-1,
+            object_type= "Pipe",
+            transparent=True
         )
 
 class brick(block):

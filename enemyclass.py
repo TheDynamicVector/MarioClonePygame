@@ -21,7 +21,8 @@ class goomba(gameobject):
             speed=233,
             accel=11,
             self_moving=True,
-            object_type="Enemy"
+            object_type="Enemy",
+            direction=-1
         )
         
         self.time_of_death = 0
@@ -46,12 +47,12 @@ class goomba(gameobject):
             self.change_anim("Death")
             self.collidable = False
 
-    def update_position(self, gravity):
+    def update_position(self, gravity, delta):
         
         if self.alive == False and time()-self.time_of_death >= 1:
             self.unqueue_self = True
 
-        super().update_position(gravity)
+        super().update_position(gravity, delta)
         
 class koopa(gameobject):
 
@@ -77,7 +78,8 @@ class koopa(gameobject):
             self_moving=True,
             object_type="Enemy",
             collision_size=[1,0.8],
-            collision_offset=[0,-23]
+            collision_offset=[0,-23],
+            direction=-1
         )
         self.shelled = False
         self.time_of_death = 0
